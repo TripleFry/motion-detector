@@ -15,7 +15,7 @@ blur_size    = st.sidebar.slider("Blur Kernel Size (odd only)", 3, 21, 5, step=2
 min_area     = st.sidebar.slider("Min Contour Area", 100, 5000, 500)
 show_contour = st.sidebar.checkbox("Show Bounding Boxes", value=True)
 
-# WebRTC config — these are public STUN servers, required for cloud
+# WebRTC config — public STUN servers
 RTC_CONFIG = RTCConfiguration({
     "iceServers": [
         {"urls": ["stun:stun.l.google.com:19302"]},
@@ -39,8 +39,7 @@ class MotionDetector(VideoProcessorBase):
             self.prev_gray = gray
             return av.VideoFrame.from_ndarray(img, format="bgr24")
 
-        # Frame differencing
-        diff    = cv2.absdiff(self.prev_gray, gray)
+        diff = cv2.absdiff(self.prev_gray, gray)
         _, thresh = cv2.threshold(diff, threshold, 255, cv2.THRESH_BINARY)
         dilated = cv2.dilate(thresh, None, iterations=2)
 
@@ -60,15 +59,13 @@ class MotionDetector(VideoProcessorBase):
                 cv2.putText(img, "MOTION", (x, y - 10),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
-        # Status label on frame
         label = "MOTION DETECTED" if motion_detected else "No Motion"
-        color = (0, 0, 255)      if motion_detected else (0, 200, 0)
+        color = (0, 0, 255) if motion_detected else (0, 200, 0)
         cv2.putText(img, label, (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
 
         self.prev_gray = gray
         return av.VideoFrame.from_ndarray(img, format="bgr24")
-
 
 webrtc_streamer(
     key="motion-detector",

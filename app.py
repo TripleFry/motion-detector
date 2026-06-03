@@ -16,7 +16,14 @@ min_area     = st.sidebar.slider("Min Contour Area", 100, 5000, 500)
 show_contour = st.sidebar.checkbox("Show Bounding Boxes", value=True)
 
 # WebRTC config — these are public STUN servers, required for cloud
-RTC_CONFIG = RTCConfiguration({"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]})
+RTC_CONFIG = RTCConfiguration({
+    "iceServers": [
+        {"urls": ["stun:stun.l.google.com:19302"]},
+        {"urls": ["stun:stun1.l.google.com:19302"]},
+        {"urls": ["stun:stun2.l.google.com:19302"]},
+        {"urls": ["stun:stun.relay.metered.ca:80"]},
+    ]
+})
 
 class MotionDetector(VideoProcessorBase):
     def __init__(self):
